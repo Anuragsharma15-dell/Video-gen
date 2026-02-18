@@ -1,24 +1,24 @@
-import mongoose  from "mongoose";
+import mongoose from "mongoose";
 
-
-const Usermodel = new mongoose.model({
-    username:{
-        type:String,
-        required:true ,
-
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
     },
-    email:{
-        type:String,
-        required:true ,
-        unique:true,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    password:{
-        type:String,
-        require:true ,
-        unique:true ,
-
+    password: {
+      type: String,
+      required: true,   // ❗ you wrote "require" before — fixed here
     },
+  },
+  { timestamps: true }
+);
 
-},{timestamps:true});
+const Usermodel = mongoose.model("User", userSchema);
+
 export default Usermodel;
-
