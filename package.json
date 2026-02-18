@@ -1,0 +1,21 @@
+{
+  "name": "simple-video-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":" nodemon backend/app.js "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anuragsharma15-dell/Video-gen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Anuragsharma15-dell/Video-gen/issues"
+  },
+  "homepage": "https://github.com/Anuragsharma15-dell/Video-gen#readme"
+}
