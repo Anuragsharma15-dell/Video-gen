@@ -1,5 +1,13 @@
 import express from "express"
 const app = express();
+import connectDb from "./db/db";
+
+
+app.use(express.json());
+app.use(cors());
+
+connectDb();
+
 
 
 
