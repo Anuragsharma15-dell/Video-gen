@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import Usermodel from "../models/Usermodel";
 
 export const authmiddleware  = async (req, res , next)=>{
     const token  = req.headers.authorization;
     const docoded  = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(docoded.id);
+    const user = await Usermodel.findById(docoded.id);
     if(!user && !docoded.id){
         return res.status(401).json({message:"Unauthorized"});
     }
