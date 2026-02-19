@@ -4,10 +4,16 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
 
+const hashPassword = async (password)=>{
+await bcrypt.hash(password, 10);
+}
+
 
 export const registerUser= async (req, res)=>{
     try {
         const validateData  = await userSchema.parseAsync(req.body);;
+        const hashedPassword = await hashPassword(validateData.password);
+        validateData.password = hashedPassword;
         const user = await Usermodel.create(validateData);
         res.status(201).json({message:"User created successfully", user});
         return {
