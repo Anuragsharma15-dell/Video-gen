@@ -8,6 +8,7 @@ import cors from "cors"
 import router from "../routes/route.js"
 
 
+
 app.use(express.json());
 app.use(cors());
 
