@@ -53,3 +53,36 @@ export const loginUser = async (req, res)=>{
         return
     }
 }
+
+export const createuser  = async (req,res )=>{
+    const User = new Usermodel.create({
+        username: username,
+
+    email: email,
+
+    password: hashPassword
+
+
+    })
+    if(!User){
+        return status(201).json({
+            message:"User not found"
+        })
+
+
+    }
+    if(User){
+        return  {
+            username: username,
+
+    email: email,
+
+    password: hashPassword
+
+        }   
+
+
+        
+    }
+
+}
