@@ -8,6 +8,7 @@ export const createVideoWithPrompt = async (req, res) => {
         const validateData = await videoSchema.parseAsync(req.body);
         
         // Get user from auth middleware (should be set by authmiddleware)
+        
         const userId = req.user?._id || req.user?.id;
         
         if (!userId) {
