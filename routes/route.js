@@ -1,6 +1,9 @@
 import { registerUser, loginUser } from "../backend/controller/controller.js";
 import { createVideoWithPrompt, getVideos } from "../backend/controller/Video-controller.js";
 import { authmiddleware } from "../backend/middleware/authmiddeware.js";
+import Router from "express"
+const router =  Router();
+
 
 // User routes
 router.post("/register", registerUser);
