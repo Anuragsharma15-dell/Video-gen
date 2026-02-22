@@ -5,7 +5,7 @@ import express from "express"
 const app = express();
 import connectDb from "./db/db.js";
 import cors from "cors"
-import router from "../routes/route.js"
+import router from "./routes/route.js"
 
 
 
