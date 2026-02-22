@@ -6,7 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon  backend/app.js"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Anuragsharma15-dell/Video-gen.git"
@@ -19,6 +18,7 @@
   },
   "homepage": "https://github.com/Anuragsharma15-dell/Video-gen#readme",
   "dependencies": {
+    "@fal-ai/client": "^1.9.3",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
