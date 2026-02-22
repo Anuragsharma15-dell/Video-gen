@@ -1,61 +1,79 @@
 import VideoModel from "../models/Video-model.js";
 import { videoSchema } from "../zod.js";
+import { Falvideo } from "../Fal-model/Fal.js";
 
 // POST /prompt - Create a video with a prompt
 export const createVideoWithPrompt = async (req, res) => {
-    try {
-        // Validate request body
-        const validateData = await videoSchema.parseAsync(req.body);
-        
-        // Get user from auth middleware (should be set by authmiddleware)
+  try {
+    // Validate request body
+    const validateData = await videoSchema.parseAsync(req.body);
 
-        const userId = req.user?._id || req.user?.id;
-        
-        if (!userId) {
-            return res.status(401).json({ 
-                message: "Unauthorized. Please login to create videos." 
-            });
-        }
+    // Get user from auth middleware (should be set by authmiddleware)
+    const userId = req.user?._id || req.user?.id;
 
-        // Create video document
-        const videoData = {
-            user: userId,
-            title: validateData.title,
-            prompt: validateData.prompt,
-            description: validateData.description,
-            status: "pending",
-            ...(validateData.aiAvatar && { aiAvatar: validateData.aiAvatar }),
-            ...(validateData.settings && { settings: validateData.settings }),
-        };
-
-        const video = await VideoModel.create(videoData);
-
-        // Populate user details
-        await video.populate("user", "username email");
-
-        res.status(201).json({
-            message: "Video creation request submitted successfully",
-            video: {
-                id: video._id,
-                title: video.title,
-                prompt: video.prompt,
-                status: video.status,
-                aiAvatar: video.aiAvatar,
-                createdAt: video.createdAt,
-            },
-        });
-    } catch (error) {
-        if (error.name === "ZodError") {
-            return res.status(400).json({
-                message: "Invalid data",
-                errors: error.errors,
-            });
-        }
-        res.status(500).json({
-            message: "Error creating video",
-            error: error.message,
-        });
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized. Please login to create videos.",
+      });
     }
+
+    // Call Fal video model with the user's prompt
+    const falResult = await Falvideo(validateData.prompt);
+
+    if (!falResult || !falResult.data) {
+      return res.status(502).json({
+        message: "Failed to generate video from Fal model.",
+      });
+    }
+
+    // Try to extract a video URL if present (adjust according to actual Fal response shape)
+    const videoUrl =
+      falResult.data.video_url ||
+      falResult.data.url ||
+      null;
+
+    // Create video document
+    const videoData = {
+      user: userId,
+      title: validateData.title,
+      prompt: validateData.prompt,
+      description: validateData.description,
+      status: videoUrl ? "completed" : "processing",
+      ...(videoUrl && { videoUrl }),
+      ...(validateData.aiAvatar && { aiAvatar: validateData.aiAvatar }),
+      ...(validateData.settings && { settings: validateData.settings }),
+    };
+
+    const video = await VideoModel.create(videoData);
+
+    // Populate user details
+    await video.populate("user", "username email");
+
+    res.status(201).json({
+      message: "Video creation request submitted successfully",
+      video: {
+        id: video._id,
+        title: video.title,
+        prompt: video.prompt,
+        status: video.status,
+        aiAvatar: video.aiAvatar,
+        createdAt: video.createdAt,
+        videoUrl,
+      },
+    });
+  } catch (error) {
+    if (error.name === "ZodError") {
+      return res.status(400).json({
+        message: "Invalid data",
+        errors: error.errors,
+      });
+    }
+    console.error("Error in createVideoWithPrompt:", error);
+    res.status(500).json({
+      message: "Error creating video",
+      error: error.message,
+    });
+  }
 };
 
 // GET /prompt - Get videos (with optional filtering)
